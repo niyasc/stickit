@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017 Niyas C <niyasmonc@gmail.com> -->
+<component type="desktop">
+  <id>com.github.niyasc.stickit.desktop</id>
+  <metadata_license>CC0</metadata_license>
+  <name>Stickit</name>
+  <summary>A simple sticky notes</summary>
+  <description>
+    <p>A simple sticky notes tool to take important notes and refer when required</p>
+  </description>
+  <custom>
+     <value key="x-appcenter-color-primary">#603461</value>
+     <value key="x-appcenter-color-primary-text">rgb(255, 255, 255)</value>
+     <value key="x-appcenter-suggested-price">5</value>
+  </custom>
+</component>

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Stickit
+GenericName=Sticky Notes
+Comment=A simple sticky notes
+Categories=Utility;
+Exec=com.github.niyasc.stickit
+Icon=application-default-icon
+Terminal=false
+Type=Application
+X-GNOME-Gettext-Domain=stickity
+Keywords=StickyNotes;
