@@ -41,8 +41,7 @@
     vala_precompile(VALA_C ${EXEC_NAME}
         src/StickyNote.vala
         src/StoredNote.vala
-        src/Stickit.vala
-        src/main.vala
+        src/Application.vala
 
     # tell what libraries to use when compiling
     PACKAGES

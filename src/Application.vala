@@ -19,6 +19,32 @@
 * Authored by: Niyas C <niyasmonc@gmail.com>
 */
 
-public int main (string[] args) {
-    return new Stickit().run(args);
+public class Application : Gtk.Application {
+    
+    /**
+     * Load saved notes from disk (if any)
+     * TODO Yet to implement this
+     */
+    private List<StoredNote> loadNotes() {
+        var list = new List<StoredNote> ();
+        // TODO Load notes from disk (if any)
+        return list;
+    }
+	
+    protected override void activate () {
+    	var list = loadNotes();
+        
+        if (list.length() == 0) {
+            new StickyNote(this);
+        }
+	}
+
+	internal Application () {
+		Object (application_id: "com.github.niyasc.stickit");
+	}
+    
+    public static int main (string[] args) {
+        var app = new Application();
+        return app.run();
+    }
 }
