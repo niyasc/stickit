@@ -25,11 +25,11 @@ public class StickyNote : Gtk.ApplicationWindow {
     private static string[] colors = {"white", "green", "yellow", "orange", "red"};
     private static int uid_counter = 0;
     private static string default_color = "gold";
-    private static int font_size = 20;
+    private static int font_size = 16;
     
     internal StickyNote (Gtk.Application app) {
         
-		Object (application: app, title: "Sticky Notes");
+        Object (application: app, title: "Sticky Notes");
         
         this.uid = uid_counter++;
         
@@ -38,50 +38,55 @@ public class StickyNote : Gtk.ApplicationWindow {
         this.set_default_size(340, 600);
         
         // Container
-		var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2);
-		this.add (box);
+        var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2);
+        this.add (box);
 
         var new_note_btn = new Gtk.Button.from_icon_name("appointment-new-symbolic");
         new_note_btn.clicked.connect (create_new_note);
-        
-        var change_color_btn = new Gtk.Button.from_icon_name("open-menu");
-        change_color_btn.clicked.connect (change_color);
 
-        Gtk.MenuButton menu_btn = create_menu();
+        Gtk.MenuButton app_menu_btn = create_app_menu();
 
         var header = new Gtk.HeaderBar();
         header.set_title("Stickit");
         header.set_show_close_button (true);
         header.pack_start (new_note_btn);
-        header.pack_start (change_color_btn);
-        header.pack_start(menu_btn);
+        header.pack_start(app_menu_btn);
         this.set_titlebar(header);
 
-		// A ScrolledWindow:
-		Gtk.ScrolledWindow scrolled = new Gtk.ScrolledWindow (null, null);
-		box.pack_start (scrolled, true, true, 0);
+        // A ScrolledWindow:
+        Gtk.ScrolledWindow scrolled = new Gtk.ScrolledWindow (null, null);
+        box.pack_start (scrolled, true, true, 0);
 
-		// The TextView:
-		Gtk.TextView view = new Gtk.TextView ();
-		view.set_wrap_mode (Gtk.WrapMode.WORD);
-		view.buffer.text = "Lorem Ipsum";
-		scrolled.add (view);
+        // The TextView:
+        Gtk.TextView view = new Gtk.TextView ();
+        view.set_wrap_mode (Gtk.WrapMode.WORD);
+        view.buffer.text = "Lorem Ipsum";
+        scrolled.add (view);
         
         this.show_all();
-	}
+    }
     
     private void update_theme() {
         var css_provider = new Gtk.CssProvider();
         
         this.get_style_context().add_class("window-%d".printf(uid));
         
-        string style = (".window-%d textview.view text, .window-%d headerbar{background-color: %s;}" +
-                        ".window-%d textview.view {font-size: %dpx; font-style : oblique}" +
-                        ".window-%d textview.view text{margin : 10px}" +
-                        "button {font-weight: bold}")
-                        .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
+        string style = null;
+        if (Gtk.get_minor_version() < 20) {
+            style = (".window-%d GtkTextView, .window-%d GtkHeaderBar {background-color: %s;}" +
+                     ".window-%d GtkTextView.view {font-size: %dpx}" +
+                     ".window-%d GtkTextView.view text{margin : 10px}")
+                     .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
+       
+        } else {
+            style = (".window-%d textview.view text, .window-%d headerbar{background-color: %s;}" +
+                     ".window-%d textview.view {font-size: %dpx; font-style : oblique}" +
+                     ".window-%d textview.view text{margin : 10px}" +
+                     "button {font-weight: bold}")
+                     .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
+        }
         
-        css_provider.load_from_data(style);
+        css_provider.load_from_data(style, -1);
         
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -90,36 +95,34 @@ public class StickyNote : Gtk.ApplicationWindow {
         );
     }
     
-    private Gtk.MenuButton create_menu() {
+    private Gtk.MenuButton create_app_menu() {
+        Gtk.Menu change_color_menu = new Gtk.Menu();
+        foreach (string color in colors) {
+            var menu_item = new Gtk.MenuItem.with_label(color);
+            menu_item.activate.connect(change_color_action);
+            change_color_menu.add(menu_item);
+        }
+    
+        Gtk.MenuItem change_color = new Gtk.MenuItem.with_label("Change Color");
+        change_color.set_submenu(change_color_menu);
         
-		var menubutton = new Gtk.MenuButton();
-		menubutton.set_size_request (80, 35);
-
-		var menumodel = new Menu ();
-		menumodel.append ("New", "app.new");
-		menumodel.append ("About", "win.about");
-
-		/* We create the last item as a MenuItem, so that
-		 * a submenu can be appended to this menu item.
-		 */
-		var submenu = new Menu ();
-		menumodel.append_submenu ("Other", submenu);
-		submenu.append ("Quit", "app.quit");
-		menubutton.set_menu_model (menumodel);
-
-		var about_action = new SimpleAction ("about", null);
-		//about_action.activate.connect (this.about_cb);
-		this.add_action (about_action);
+        Gtk.Menu app_menu = new Gtk.Menu();
+        app_menu.add(change_color);
+        app_menu.show_all();
         
-        return menubutton;
+        var app_menu_btn = new Gtk.MenuButton();
+        app_menu_btn.image = new Gtk.Image.from_icon_name ("preferences-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        app_menu_btn.set_popup(app_menu);
+        
+        return app_menu_btn;
     }
     
     private void create_new_note(Gtk.Button new_btn) {
         new StickyNote(this.application);
     }
     
-    private void change_color(Gtk.Button change_color) {
-        this.color = colors[Random.int_range(0, 5)];
+    private void change_color_action(Gtk.MenuItem color_item) {
+        this.color = color_item.get_label();
         update_theme();
     }
 }
