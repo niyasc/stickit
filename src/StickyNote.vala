@@ -85,8 +85,11 @@ public class StickyNote : Gtk.ApplicationWindow {
                      "button {font-weight: bold}")
                      .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
         }
-        
-        css_provider.load_from_data(style, -1);
+        try {
+            css_provider.load_from_data(style, -1);
+        } catch (GLib.Error e) {
+            stdout.printf("Failed to parse css style : %s", e.message);
+        }
         
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
