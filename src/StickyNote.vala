@@ -20,11 +20,12 @@
 */
 
 public class StickyNote : Gtk.ApplicationWindow {
-    private string color;
+    private int color = -1;
     private int uid;
-    private static string[] colors = {"white", "green", "yellow", "orange", "red"};
+    private static string[] colorCode = {"white", "green", "yellow", "orange", "red"};
+    private static string[] colorValue = {"ffffff", "9FF780", "F3F781", "FAAC58", "FE642E"};
     private static int uid_counter = 0;
-    private static string default_color = "gold";
+    private static int default_color = 1;
     private static int font_size = 16;
     
     internal StickyNote (Gtk.Application app) {
@@ -72,19 +73,21 @@ public class StickyNote : Gtk.ApplicationWindow {
         this.get_style_context().add_class("window-%d".printf(uid));
         
         string style = null;
+        string selected_color = this.color == -1 ? colorValue[default_color] : colorValue[color];
         if (Gtk.get_minor_version() < 20) {
-            style = (".window-%d GtkTextView, .window-%d GtkHeaderBar {background-color: %s;}" +
+            style = (".window-%d GtkTextView, .window-%d GtkHeaderBar {background-color: #%s;}" +
                      ".window-%d GtkTextView.view {font-size: %dpx}" +
                      ".window-%d GtkTextView.view text{margin : 10px}")
-                     .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
+                     .printf(uid, uid, selected_color, uid, font_size, uid);
        
         } else {
-            style = (".window-%d textview.view text, .window-%d headerbar{background-color: %s;}" +
+            style = (".window-%d textview.view text, .window-%d headerbar{background-color: #%s;}" +
                      ".window-%d textview.view {font-size: %dpx; font-style : oblique}" +
                      ".window-%d textview.view text{margin : 10px}" +
                      "button {font-weight: bold}")
-                     .printf(uid, uid, (this.color == null ? default_color : color), uid, font_size, uid);
+                     .printf(uid, uid, selected_color, uid, font_size, uid);
         }
+
         try {
             css_provider.load_from_data(style, -1);
         } catch (GLib.Error e) {
@@ -100,8 +103,9 @@ public class StickyNote : Gtk.ApplicationWindow {
     
     private Gtk.MenuButton create_app_menu() {
         Gtk.Menu change_color_menu = new Gtk.Menu();
-        foreach (string color in colors) {
-            var menu_item = new Gtk.MenuItem.with_label(color);
+        foreach (string color in colorCode) {
+            var menu_item = new Gtk.MenuItem.with_label(capitalize(color));
+            
             menu_item.activate.connect(change_color_action);
             change_color_menu.add(menu_item);
         }
@@ -114,7 +118,7 @@ public class StickyNote : Gtk.ApplicationWindow {
         app_menu.show_all();
         
         var app_menu_btn = new Gtk.MenuButton();
-        app_menu_btn.image = new Gtk.Image.from_icon_name ("preferences-menu", Gtk.IconSize.LARGE_TOOLBAR);
+        app_menu_btn.image = new Gtk.Image.from_icon_name ("open-menu-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
         app_menu_btn.set_popup(app_menu);
         
         return app_menu_btn;
@@ -125,7 +129,22 @@ public class StickyNote : Gtk.ApplicationWindow {
     }
     
     private void change_color_action(Gtk.MenuItem color_item) {
-        this.color = color_item.get_label();
+        this.color = findColorIndex(color_item.get_label());
         update_theme();
+    }
+    
+    private string capitalize(string input) {
+        return input.substring(0, 1).up() + input.substring(1).down();
+    }
+    
+    private int findColorIndex(string icolor) {
+        int index = 0;
+        foreach (string color in colorCode) {
+            if (color == icolor.down()) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 }
