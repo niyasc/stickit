@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/niyasc/stickit">
+    <file alias="blue.png">icons/blue.png</file>
+    <file alias="green.png">icons/green.png</file>
+    <file alias="yellow.png">icons/yellow.png</file>
+    <file alias="orange.png">icons/orange.png</file>
+    <file alias="red.png">icons/red.png</file>
+    <file alias="white.png">icons/white.png</file>
+  </gresource>
+</gresources>
