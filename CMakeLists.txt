@@ -39,6 +39,7 @@
     # files we want to compile
     include(ValaPrecompile)
     vala_precompile(VALA_C ${EXEC_NAME}
+        src/widgets/Confirmation.vala
         src/StickyNote.vala
         src/StoredNote.vala
         src/Application.vala
@@ -48,8 +49,12 @@
         gtk+-3.0
     )
 
+    include (GResource)
+    glib_compile_resources (GLIB_RESOURCES SOURCE data/resources.xml)
+
     # tell cmake what to call the executable we just made
-    add_executable(${EXEC_NAME} ${VALA_C})
+    add_executable(${EXEC_NAME} ${VALA_C} ${GLIB_RESOURCES})
+    
 
     # install the binaries we just made
     install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)

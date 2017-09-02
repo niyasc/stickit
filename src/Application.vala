@@ -21,6 +21,8 @@
 
 public class Application : Gtk.Application {
     
+    private List<StickyNote> current_notes = new List<StickyNote>();
+    
     /**
      * Load saved notes from disk (if any)
      * TODO Yet to implement this
@@ -28,6 +30,7 @@ public class Application : Gtk.Application {
     private List<StoredNote> loadNotes() {
         var list = new List<StoredNote> ();
         // TODO Load notes from disk (if any)
+        list.append(new StoredNote.from_stored(100, 200, 720, 340, 1, "Hell, World"));
         return list;
     }
 	
@@ -35,8 +38,21 @@ public class Application : Gtk.Application {
     	var list = loadNotes();
         
         if (list.length() == 0) {
-            new StickyNote(this);
+            create_note(null);
+        } else {
+            foreach (StoredNote stored_note in list) {
+                create_note(stored_note);
+            }
         }
+	}
+	
+	public void create_note(StoredNote? stored = null) {
+	    var note = new StickyNote(this, stored);
+	    current_notes.append(note);
+	}
+	
+	public void remove_note(StickyNote note) {
+	    current_notes.remove(note);
 	}
 
 	internal Application () {

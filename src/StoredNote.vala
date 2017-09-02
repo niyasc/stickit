@@ -19,5 +19,23 @@
 * Authored by: Niyas C <niyasmonc@gmail.com>
 */
 
-public class StoredNote {
+public class StoredNote : Object{
+
+  internal StoredNote() {}
+
+  internal StoredNote.from_stored(int x, int y, int width, int height, int color, string message) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.color = color;
+    this.content = message;
+  }
+
+  public int x;
+  public int y;
+  public int width;
+  public int height;
+  public int color;
+  public string content;
 }

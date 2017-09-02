@@ -22,15 +22,20 @@
 public class StickyNote : Gtk.ApplicationWindow {
     private int color = -1;
     private int uid;
-    private static string[] colorCode = {"white", "green", "yellow", "orange", "red"};
-    private static string[] colorValue = {"ffffff", "9FF780", "F3F781", "FAAC58", "FE642E"};
+    private static string[] colorCode = {"white", "green", "yellow", "orange", "red", "blue"};
+    private static string[] colorValue = {"ffffff", "9FF780", "F3F781", "FAAC58", "FE642E", " 33f3ff"};
     private static int uid_counter = 0;
     private static int default_color = 1;
     private static int font_size = 16;
+    private string content = "";
     
-    internal StickyNote (Gtk.Application app) {
+    internal StickyNote (Gtk.Application app, StoredNote? stored = null) {
         
         Object (application: app, title: "Sticky Notes");
+        
+        if (stored != null) {
+            init_from_stored(stored);
+        }
         
         this.uid = uid_counter++;
         
@@ -45,13 +50,17 @@ public class StickyNote : Gtk.ApplicationWindow {
         var new_note_btn = new Gtk.Button.from_icon_name("appointment-new-symbolic");
         new_note_btn.clicked.connect (create_new_note);
 
+        var delete_btn = new Gtk.Button.from_icon_name("edittrash");
+        delete_btn.clicked.connect(delete_note);
+
         Gtk.MenuButton app_menu_btn = create_app_menu();
 
         var header = new Gtk.HeaderBar();
         header.set_title("Stickit");
-        header.set_show_close_button (true);
+        header.set_show_close_button (false);
         header.pack_start (new_note_btn);
-        header.pack_start(app_menu_btn);
+        header.pack_end(app_menu_btn);
+        header.pack_end(delete_btn);
         this.set_titlebar(header);
 
         // A ScrolledWindow:
@@ -61,7 +70,7 @@ public class StickyNote : Gtk.ApplicationWindow {
         // The TextView:
         Gtk.TextView view = new Gtk.TextView ();
         view.set_wrap_mode (Gtk.WrapMode.WORD);
-        view.buffer.text = "Lorem Ipsum";
+        view.buffer.text = this.content;
         scrolled.add (view);
         
         this.show_all();
@@ -104,9 +113,17 @@ public class StickyNote : Gtk.ApplicationWindow {
     private Gtk.MenuButton create_app_menu() {
         Gtk.Menu change_color_menu = new Gtk.Menu();
         foreach (string color in colorCode) {
-            var menu_item = new Gtk.MenuItem.with_label(capitalize(color));
+            var symbol = new Gtk.Image.from_resource("/com/github/niyasc/stickit/%s.png".printf(color));
+            var label = new Gtk.Label(capitalize(color));
             
-            menu_item.activate.connect(change_color_action);
+            Gtk.Box box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
+            box.add(symbol);
+            box.add(label);
+
+            var menu_item = new Gtk.MenuItem();
+            menu_item.action_name = "change_color-" + color;
+            menu_item.add(box);
+            
             change_color_menu.add(menu_item);
         }
     
@@ -124,13 +141,25 @@ public class StickyNote : Gtk.ApplicationWindow {
         return app_menu_btn;
     }
     
+    private void init_from_stored(StoredNote stored) {
+        this.color = stored.color;
+        this.content = stored.content;
+        this.set_default_size (stored.width, stored.height);
+        this.move(stored.x, stored.y);
+    }
+    
     private void create_new_note(Gtk.Button new_btn) {
-        new StickyNote(this.application);
+        ((Application)this.application).create_note(null);
     }
     
     private void change_color_action(Gtk.MenuItem color_item) {
         this.color = findColorIndex(color_item.get_label());
         update_theme();
+    }
+    
+    private void delete_note(Gtk.Button delete_btn) {
+        ((Application)this.application).remove_note(this);
+        this.close();
     }
     
     private string capitalize(string input) {
