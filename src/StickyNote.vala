@@ -23,7 +23,7 @@ public class StickyNote : Gtk.ApplicationWindow {
     private int color = -1;
     private int uid;
     private static string[] colorCode = {"white", "green", "yellow", "orange", "red", "blue"};
-    private static string[] colorValue = {"ffffff", "9FF780", "F3F781", "FAAC58", "FE642E", " 33f3ff"};
+    private static string[] colorValue = {"ffffff", "9FF780", "F3F781", "FAAC58", "FE642E", "33f3ff"};
     private static int uid_counter = 0;
     private static int default_color = 1;
     private static int font_size = 16;
@@ -96,7 +96,7 @@ public class StickyNote : Gtk.ApplicationWindow {
                      "button {font-weight: bold}")
                      .printf(uid, uid, selected_color, uid, font_size, uid);
         }
-
+        
         try {
             css_provider.load_from_data(style, -1);
         } catch (GLib.Error e) {
@@ -121,7 +121,8 @@ public class StickyNote : Gtk.ApplicationWindow {
             box.add(label);
 
             var menu_item = new Gtk.MenuItem();
-            menu_item.action_name = "change_color-" + color;
+            menu_item.name = color;
+            menu_item.activate.connect(change_color_action);
             menu_item.add(box);
             
             change_color_menu.add(menu_item);
@@ -153,7 +154,7 @@ public class StickyNote : Gtk.ApplicationWindow {
     }
     
     private void change_color_action(Gtk.MenuItem color_item) {
-        this.color = findColorIndex(color_item.get_label());
+        this.color = findColorIndex(color_item.name);
         update_theme();
     }
     

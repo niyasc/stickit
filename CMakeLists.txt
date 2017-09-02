@@ -39,7 +39,6 @@
     # files we want to compile
     include(ValaPrecompile)
     vala_precompile(VALA_C ${EXEC_NAME}
-        src/widgets/Confirmation.vala
         src/StickyNote.vala
         src/StoredNote.vala
         src/Application.vala

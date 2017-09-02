@@ -7,6 +7,5 @@
     <file alias="orange.png">icons/orange.png</file>
     <file alias="red.png">icons/red.png</file>
     <file alias="white.png">icons/white.png</file>
-    <file alias="ui/confirmation.glade">ui/confirmation.glade</file>
   </gresource>
 </gresources>
