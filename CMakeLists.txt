@@ -23,7 +23,7 @@
     find_package(PkgConfig)
 
     # now let's actually check for the required dependencies
-    pkg_check_modules(DEPS REQUIRED gtk+-3.0)
+    pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 gee-0.8)
 
     add_definitions(${DEPS_CFLAGS})
     link_libraries(${DEPS_LIBRARIES})
@@ -39,6 +39,7 @@
     # files we want to compile
     include(ValaPrecompile)
     vala_precompile(VALA_C ${EXEC_NAME}
+        src/service/PersistenceManager.vala
         src/StickyNote.vala
         src/StoredNote.vala
         src/Application.vala
@@ -46,6 +47,8 @@
     # tell what libraries to use when compiling
     PACKAGES
         gtk+-3.0
+        json-glib-1.0
+        gee-0.8
     )
 
     include (GResource)

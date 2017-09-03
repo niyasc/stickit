@@ -36,6 +36,11 @@ class PersistenceManager {
             if (!dir.query_exists()) {
                 dir.make_directory();
             }
+            
+            // delete if file already exists
+            if (file.query_exists ()) {
+                file.delete ();
+            }
         
             var file_stream = file.create (FileCreateFlags.REPLACE_DESTINATION );
             var data_stream = new DataOutputStream (file_stream);
@@ -50,15 +55,15 @@ class PersistenceManager {
         string[] json_notes = new string[notes.length()];
         int index = 0;
         foreach (StoredNote note in notes) {
-            json_notes[index++] = "{\"x\":%d, \"y\":%d, \"width\":%d, \"height\":%d, \"color\":%d, \"content\":\"%s\"}"
+            json_notes[index++] = "{\"x\":\"%d\", \"y\":\"%d\", \"width\":\"%d\", \"height\":\"%d\", \"color\":\"%d\", \"content\":\"%s\"}"
                                     .printf(note.x, note.y, note.width, note.height, note.color, note.content);
         }
         
         return "[%s]".printf(string.joinv(",", json_notes));
     }
 
-    public List<StoredNote> load_from_file() {
-        List<StoredNote> stored_notes = new List<StoredNote>();
+    public Gee.ArrayList<StoredNote> load_from_file() {
+        Gee.ArrayList<StoredNote> stored_notes = new Gee.ArrayList<StoredNote>();
 
         try {
             var file = File.new_for_path(file_name);
@@ -70,24 +75,23 @@ class PersistenceManager {
                 while ((line = dis.read_line (null)) != null) {
                     json_string += line;
                 }
-                
+
                 var parser = new Json.Parser();
                 parser.load_from_data(json_string);
                 
-                Json.Node root = parser.get_root();
-                
-                root.get_array().foreach_element((node)=> {
-                    int x = int.parse(node.get_string_element(0));
-                    int y = int.parse(node.get_string_element(1));
-                    int width = int.parse(node.get_string_element(2));
-                    int height = int.parse(node.get_string_element(3));
-                    int color = int.parse(node.get_string_element(4));
-                    string content = node.get_string_element(5);
-                    
+                var root = parser.get_root();
+                var array = root.get_array();
+                foreach (var item in array.get_elements()) {
+                    var node = item.get_object();
+                    int x = int.parse(node.get_string_member("x"));
+                    int y = int.parse(node.get_string_member("y"));
+                    int width = int.parse(node.get_string_member("width"));
+                    int height = int.parse(node.get_string_member("height"));
+                    int color = int.parse(node.get_string_member("color"));
+                    string content = node.get_string_member("content");
                     StoredNote stored_note = new StoredNote.from_stored(x, y, width, height, color, content);
-                    
-                    stored_notes.append(stored_note);
-                });
+                    stored_notes.add(stored_note);
+                }
                 
             }
 
@@ -95,7 +99,7 @@ class PersistenceManager {
             stderr.printf ("Failed to load file %s\n", e.message);
         }
 
-        return stored_notes.copy();
+        return stored_notes;
     }
 
 }

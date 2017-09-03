@@ -23,21 +23,12 @@ public class Application : Gtk.Application {
     
     private List<StickyNote> current_notes = new List<StickyNote>();
     
-    /**
-     * Load saved notes from disk (if any)
-     * TODO Yet to implement this
-     */
-    private List<StoredNote> loadNotes() {
-        var list = new List<StoredNote> ();
-        // TODO Load notes from disk (if any)
-        list.append(new StoredNote.from_stored(100, 200, 720, 340, 1, "Hell, World"));
-        return list;
-    }
+    private PersistenceManager persistence_manager = new PersistenceManager();
 	
     protected override void activate () {
-    	var list = loadNotes();
+    	var list = persistence_manager.load_from_file();
         
-        if (list.length() == 0) {
+        if (list.size == 0) {
             create_note(null);
         } else {
             foreach (StoredNote stored_note in list) {
@@ -46,13 +37,24 @@ public class Application : Gtk.Application {
         }
 	}
 	
-	public void create_note(StoredNote? stored = null) {
+	public void create_note(StoredNote? stored) {
 	    var note = new StickyNote(this, stored);
 	    current_notes.append(note);
 	}
 	
 	public void remove_note(StickyNote note) {
 	    current_notes.remove(note);
+	}
+	
+	public void quit_notes() {
+	    List<StoredNote> stored_notes = new List<StoredNote>();
+	    
+	    foreach (StickyNote sticky_note in current_notes) {
+	        stored_notes.append(sticky_note.get_stored_note());
+	        sticky_note.close();
+	    }
+	    
+	    persistence_manager.save_notes(stored_notes);
 	}
 
 	internal Application () {

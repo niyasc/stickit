@@ -28,9 +28,11 @@ public class StickyNote : Gtk.ApplicationWindow {
     private static int default_color = 1;
     private static int font_size = 16;
     private string content = "";
+    private int width = -1;
+    private int height = -1;
+    private Gtk.TextView view = new Gtk.TextView ();
     
-    internal StickyNote (Gtk.Application app, StoredNote? stored = null) {
-        
+    internal StickyNote (Gtk.Application app, StoredNote? stored) {
         Object (application: app, title: "Sticky Notes");
         
         if (stored != null) {
@@ -41,7 +43,11 @@ public class StickyNote : Gtk.ApplicationWindow {
         
         update_theme();
 
-        this.set_default_size(340, 600);
+        if (width + height > 0) {
+            this.set_default_size(width, height);
+        } else {
+            this.set_default_size(340, 600);
+        }
         
         // Container
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2);
@@ -68,7 +74,6 @@ public class StickyNote : Gtk.ApplicationWindow {
         box.pack_start (scrolled, true, true, 0);
 
         // The TextView:
-        Gtk.TextView view = new Gtk.TextView ();
         view.set_wrap_mode (Gtk.WrapMode.WORD);
         view.buffer.text = this.content;
         scrolled.add (view);
@@ -131,8 +136,14 @@ public class StickyNote : Gtk.ApplicationWindow {
         Gtk.MenuItem change_color = new Gtk.MenuItem.with_label("Change Color");
         change_color.set_submenu(change_color_menu);
         
+        
+        Gtk.MenuItem quit_notes = new Gtk.MenuItem.with_label("Close all notes");
+        quit_notes.activate.connect(quit_notes_action);
+        
         Gtk.Menu app_menu = new Gtk.Menu();
         app_menu.add(change_color);
+        app_menu.add(new Gtk.SeparatorMenuItem());
+        app_menu.add(quit_notes);
         app_menu.show_all();
         
         var app_menu_btn = new Gtk.MenuButton();
@@ -145,7 +156,8 @@ public class StickyNote : Gtk.ApplicationWindow {
     private void init_from_stored(StoredNote stored) {
         this.color = stored.color;
         this.content = stored.content;
-        this.set_default_size (stored.width, stored.height);
+        this.width = stored.width;
+        this.height = stored.height;
         this.move(stored.x, stored.y);
     }
     
@@ -158,9 +170,24 @@ public class StickyNote : Gtk.ApplicationWindow {
         update_theme();
     }
     
+    private void quit_notes_action (Gtk.MenuItem quit_notes) {
+        ((Application)this.application).quit_notes();
+    }
+    
     private void delete_note(Gtk.Button delete_btn) {
         ((Application)this.application).remove_note(this);
         this.close();
+    }
+    
+    public StoredNote get_stored_note() {
+        int x, y, width, height, color;
+        string content = view.buffer.text;
+        
+        this.get_position (out x, out y);
+        this.get_size (out width, out height);
+        color = this.color;
+        
+        return new StoredNote.from_stored(x, y, width, height, color, content);
     }
     
     private string capitalize(string input) {
