@@ -66,3 +66,17 @@
 
     # install our .appdata.xml file so AppCenter will see it
     install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/com.github.niyasc.stickit.appdata.xml DESTINATION ${DATADIR}/metainfo/)
+    
+    # install icon files
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/16/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/16x16/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/16/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/16x16@2/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/24/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/24x24/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/24/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/24x24@2/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/32/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/32x32/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/32/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/32x32@2/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/48/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/48x48/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/48/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/48x48@2/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/64/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/64x64/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/64/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/64x64@2/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/128/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/128x128/apps)
+    install (FILES ${CMAKE_SOURCE_DIR}/data/icons/128/com.github.niyasc.stickit.svg DESTINATION ${DATADIR}/icons/hicolor/128x128@2/apps)
