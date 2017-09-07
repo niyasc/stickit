@@ -7,5 +7,6 @@
     <file alias="orange.png">icons/orange.png</file>
     <file alias="red.png">icons/red.png</file>
     <file alias="white.png">icons/white.png</file>
+    <file alias="icon.svg">icons/64/com.github.niyasc.stickit.svg</file>
   </gresource>
 </gresources>

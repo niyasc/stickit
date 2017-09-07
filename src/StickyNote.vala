@@ -32,6 +32,7 @@ public class StickyNote : Gtk.ApplicationWindow {
     private int height = -1;
     private Gtk.TextView view = new Gtk.TextView ();
     
+    
     internal StickyNote (Gtk.Application app, StoredNote? stored) {
         Object (application: app, title: "Sticky Notes");
         
@@ -118,7 +119,7 @@ public class StickyNote : Gtk.ApplicationWindow {
     private Gtk.MenuButton create_app_menu() {
         Gtk.Menu change_color_menu = new Gtk.Menu();
         foreach (string color in colorCode) {
-            var symbol = new Gtk.Image.from_resource("/com/github/niyasc/stickit/%s.png".printf(color));
+            var symbol = new Gtk.Image.from_resource(Application.RESOURCE_PATH + "%s.png".printf(color));
             var label = new Gtk.Label(capitalize(color));
             
             Gtk.Box box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 6);
@@ -140,10 +141,15 @@ public class StickyNote : Gtk.ApplicationWindow {
         Gtk.MenuItem quit_notes = new Gtk.MenuItem.with_label("Close all notes");
         quit_notes.activate.connect(quit_notes_action);
         
+        Gtk.MenuItem about_dialog = new Gtk.MenuItem.with_label("About");
+        about_dialog.activate.connect (show_about_dialog);
+        
         Gtk.Menu app_menu = new Gtk.Menu();
         app_menu.add(change_color);
         app_menu.add(new Gtk.SeparatorMenuItem());
         app_menu.add(quit_notes);
+        app_menu.add(new Gtk.SeparatorMenuItem());
+        app_menu.add(about_dialog);
         app_menu.show_all();
         
         var app_menu_btn = new Gtk.MenuButton();
@@ -168,6 +174,28 @@ public class StickyNote : Gtk.ApplicationWindow {
     private void change_color_action(Gtk.MenuItem color_item) {
         this.color = findColorIndex(color_item.name);
         update_theme();
+    }
+    
+    private void show_about_dialog (Gtk.MenuItem about_dialog) {
+        string[] authors = {"Niyas C"};
+        Gdk.Pixbuf logo = null;
+        try {
+            logo = new Gdk.Pixbuf.from_resource(Application.RESOURCE_PATH + "icon.svg");
+        }
+        catch (GLib.Error e) {
+            stdout.printf("Failed to parse css style : %s", e.message);
+        }
+        
+        Gtk.show_about_dialog (this,
+            program_name: "Stickit",
+            copyright: "Copyright © 2017 Niyas C",
+            authors: authors,
+            website: "https://github.com/niyasc/stickit",
+            website_label: "Source code",
+            logo: logo,
+            version: Application.VERSION,
+            comments: "An effective sticky note app"
+        );
     }
     
     private void quit_notes_action (Gtk.MenuItem quit_notes) {
