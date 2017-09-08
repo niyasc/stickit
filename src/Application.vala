@@ -22,7 +22,7 @@
 public class Application : Gtk.Application {
 
     public const string RESOURCE_PATH = "/com/github/niyasc/stickit/";
-    public const string VERSION = "0.1";
+    public const string VERSION = "0.01";
     
     private List<StickyNote> current_notes = new List<StickyNote>();
     private PersistenceManager persistence_manager = new PersistenceManager();

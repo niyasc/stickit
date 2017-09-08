@@ -1,4 +1,4 @@
-Source: stickit
+Source: com.github.niyasc.stickit
 Section: x11
 Priority: extra
 Maintainer: Niyas C <niyasmonc@gmail.com>
@@ -8,9 +8,10 @@ Build-Depends: valac,
                libjson-glib-dev,
                libgtk-3-dev,
                libgee-0.8-dev
+
 Standards-Version: 3.9.3
-Package: stickit
+Package: com.github.niyasc.stickit
 Architecture: any
-version: 0.1
-Description: Stickit
- First build of Stickit, a simple sticky note app
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A simple sticky note app
+ A simple, yet efficient sticky notes application

@@ -1,8 +1,8 @@
 Format: http://dep.debian.net/deps/dep5
-Upstream-Name: stickit
+Upstream-Name: agenda
 Source: https://github.com/niyasc/stickit
 
-Files: *
+Files: src/* data/* cmake/* debian/*
 Copyright: 2017 Niyas C
 License: GPL-3.0+
 
