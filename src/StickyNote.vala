@@ -90,13 +90,13 @@ public class StickyNote : Gtk.ApplicationWindow {
         string style = null;
         string selected_color = this.color == -1 ? colorValue[default_color] : colorValue[color];
         if (Gtk.get_minor_version() < 20) {
-            style = (".window-%d GtkTextView, .window-%d GtkHeaderBar {background-color: #%s;}" +
+            style = ("* {color : black} .window-%d GtkTextView, .window-%d GtkHeaderBar {background-color: #%s;}" +
                      ".window-%d GtkTextView.view {font-size: %dpx}" +
                      ".window-%d GtkTextView.view text{margin : 10px}")
                      .printf(uid, uid, selected_color, uid, font_size, uid);
        
         } else {
-            style = (".window-%d textview.view text, .window-%d headerbar{background-color: #%s;}" +
+            style = ("* {color : black} .window-%d textview.view text, .window-%d headerbar{background-color: #%s;}" +
                      ".window-%d textview.view {font-size: %dpx; font-style : oblique}" +
                      ".window-%d textview.view text{margin : 10px}" +
                      "button {font-weight: bold}")
