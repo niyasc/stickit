@@ -3,7 +3,7 @@ Upstream-Name: agenda
 Source: https://github.com/niyasc/stickit
 
 Files: src/* data/* cmake/* debian/*
-Copyright: 2017 Niyas C
+Copyright: 2018 Niyas C
 License: GPL-3.0+
 
 License: GPL-3.0+

@@ -10,6 +10,7 @@
 
     # where we install data directory (if we have any)
     set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
+    
 
     # what to call that directory where we install data too
     set (PKGDATADIR "${DATADIR}/com.github.niyasc.stickit")

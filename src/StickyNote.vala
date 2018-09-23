@@ -54,10 +54,10 @@ public class StickyNote : Gtk.ApplicationWindow {
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2);
         this.add (box);
 
-        var new_note_btn = new Gtk.Button.from_icon_name("appointment-new-symbolic");
+        var new_note_btn = new Gtk.Button.from_icon_name("list-add-symbolic");
         new_note_btn.clicked.connect (create_new_note);
 
-        var delete_btn = new Gtk.Button.from_icon_name("edittrash");
+        var delete_btn = new Gtk.Button.from_icon_name("user-trash-symbolic");
         delete_btn.clicked.connect(delete_note);
 
         Gtk.MenuButton app_menu_btn = create_app_menu();
